@@ -1,18 +1,21 @@
 <template>
   <div>
-    <ProductDetail :product="product" />
+    <ProductDetail v-if="product" :product="product" />
+    <span v-else>{{ errorMessage }}</span>
   </div>
 </template>
 
-<script setup>
-const { id } = useRoute().params;
-const uri = "https://fakestoreapi.com/products/" + id;
-
-const { data: product } = await useFetch(uri, { key: id });
-
+<script setup lang="ts">
 definePageMeta({
-  layout: "default",
-});
+  layout: 'default'
+})
+
+const { id } = useRoute().params
+const { product, getProduct, errorMessage } = useProductDetail()
+
+if (id && typeof id === 'string') {
+  await getProduct(id)
+}
 </script>
 
 <style lang="scss" scoped></style>
